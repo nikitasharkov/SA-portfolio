@@ -1,0 +1,36 @@
+@startuml
+
+left to right direction
+skinparam actorStyle awesome
+
+rectangle "Маркетплейс — Одежда" {
+
+  usecase "Поиск брендов" as UC1
+  usecase "Просмотр брендов списком" as UC2
+  usecase "Выбрать бренд\n(перейти к товарам)" as UC3
+  usecase "Сортировка по алфавиту" as UC4
+
+  usecase "Создать бренд" as UC5
+  usecase "Изменить бренд" as UC6
+  usecase "Удалить бренд" as UC7
+
+  usecase "Привязка коллекции товаров" as UC8
+
+}
+
+:Пользователь: --> UC1
+:Пользователь: --> UC2
+:Пользователь: --> UC3
+:Пользователь: --> UC4
+
+:Контент-менеджер: --> UC2
+:Контент-менеджер: --> UC5
+:Контент-менеджер: --> UC6
+:Контент-менеджер: --> UC7
+
+UC5 ..> UC8 : <<include>>
+UC6 ..> UC8 : <<include>>
+
+@enduml
+
+                  
