@@ -1,0 +1,63 @@
+@startuml
+actor User
+participant "Brands Page" as UI
+participant "Backend API" as API
+database "Database" as DB
+
+== Просмотр списка брендов ==
+User -> UI : открывает страницу брендов
+activate UI
+UI -> API : GET /brands
+activate API
+API -> DB : SELECT * FROM brands
+DB --> API : список брендов
+deactivate API
+UI --> User : отображает список брендов
+deactivate UI
+
+== Поиск по названию ==
+User -> UI : вводит название бренда
+activate UI
+UI -> API : GET /brands?search=название
+activate API
+API -> DB : SELECT * FROM brands WHERE name LIKE '%название%'
+DB --> API : результат
+deactivate API
+
+alt Бренды не найдены
+    API --> UI : 200 OK (пустой список)
+    UI --> User : отображает уведомление "бренды не найдены"
+else Бренды найдены
+    API --> UI : 200 OK (список брендов)
+    UI --> User : отображает список брендов
+end
+
+deactivate UI
+
+== Сортировка по алфавиту ==
+User -> UI : выбирает сортировку
+activate UI
+UI -> API : GET /brands?sort=alphabetical
+activate API
+API -> DB : SELECT * FROM brands ORDER BY name
+DB --> API : отсортированный список
+deactivate API
+UI --> User : отображает отсортированный список
+deactivate UI
+
+== Переход в товары бренда ==
+User -> UI : кликает на бренд
+activate UI
+UI -> API : GET /brands/{brand_id}/products
+activate API
+API -> DB : SELECT * FROM products WHERE brand_id = {brand_id}
+DB --> API : товары ИЛИ ошибка (404 - товары не найдены)
+deactivate API
+UI -> API : GET /brands/{brand_id}/banners
+activate API
+API -> DB : SELECT * FROM banners WHERE brand_id = {brand_id}
+DB --> API : баннеры ИЛИ ошибка (404 - бренд не найден)
+deactivate API
+UI --> User : отображает товары и баннеры
+deactivate UI
+@enduml
